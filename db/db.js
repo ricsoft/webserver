@@ -9,12 +9,15 @@ export async function connect() {
 
 export async function setupDb() {
   const mongo = await connect();
-  await setupBookmarks(mongo);
+  const collNames = await collectionNames(mongo);
+
+  await setupBookmarks(mongo, collNames);
+
   mongo.connection.close();
 }
 
-export async function collectionNames(mongo) {
+async function collectionNames(mongo) {
   const collections = await mongo.connection.db.listCollections().toArray();
-  const names = collections.map((collection) => collection.name);
-  return names;
+  const collNames = collections.map((collection) => collection.name);
+  return collNames;
 }

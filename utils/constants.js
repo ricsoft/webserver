@@ -2,6 +2,7 @@ export const methods = {
   get: "GET",
   post: "POST",
   create: "CREATE",
+  delete: "DELETE"
 };
 
 export const httpStatus = {

@@ -1,4 +1,4 @@
-import { methods } from "../utils/constants.js";
+import { actions } from "../utils/constants.js";
 import * as bookmarks from "../db/bookmarks.js";
 
 export async function get() {
@@ -10,6 +10,7 @@ export async function getFolder(folderId) {
 }
 
 export async function post(req) {
-  if (req.method === methods.create) return await bookmarks.create(req);
-  if (req.method === methods.delete) return await bookmarks.del(req);
+  if (req.action === actions.create) return await bookmarks.create(req);
+  if (req.action === actions.delete) return await bookmarks.del(req);
+  if (req.action === actions.edit) return await bookmarks.edit(req);
 }

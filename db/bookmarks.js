@@ -77,13 +77,60 @@ export async function create(req) {
   return res.modifiedCount === 1;
 }
 
-export async function del(req) {
-  let filter = { name: "links", root: true };
+export async function edit(req) {
+  const filter = req?.fromFolder
+    ? { _id: req.fromFolder }
+    : { name: "links", root: true };
+  const mongo = await connect();
+  const bookmarks =
+    mongo.models.bookmarks || mongo.model("bookmarks", schema(mongo));
 
-  if (req?.fromFolder) {
-    filter = { _id: req.fromFolder };
+  const document = await bookmarks.findOne(filter);
+  const index = document.data.findIndex((link) => link.uid === req.uid);
+
+  if (req?.isFolder) {
+    document.data[index] = { ...document.data[index], name: req.name };
+  } else {
+    document.data[index] = {
+      ...document.data[index],
+      name: req.name,
+      link: req.link,
+    };
   }
 
+  if (req?.orderChanged) {
+    const currentOrder = req.orderChanged[0];
+    const updatedOrder = req.orderChanged[1];
+
+    if (currentOrder > updatedOrder) {
+      document.data = [
+        ...document.data.slice(0, updatedOrder),
+        document.data[currentOrder],
+        ...document.data.slice(updatedOrder, currentOrder),
+        ...document.data.slice(currentOrder + 1),
+      ];
+    } else {
+      document.data = [
+        ...document.data.slice(0, currentOrder),
+        ...document.data.slice(currentOrder + 1, updatedOrder + 1),
+        document.data[currentOrder],
+        ...document.data.slice(updatedOrder + 1),
+      ];
+    }
+  }
+
+  const res = await bookmarks.updateOne(filter, {
+    data: [...document.data],
+  });
+  mongo.connection.close();
+
+  return res.modifiedCount === 1;
+}
+
+export async function del(req) {
+  const filter = req?.fromFolder
+    ? { _id: req.fromFolder }
+    : { name: "links", root: true };
   const mongo = await connect();
   const bookmarks =
     mongo.models.bookmarks || mongo.model("bookmarks", schema(mongo));

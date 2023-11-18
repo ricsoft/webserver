@@ -1,8 +1,8 @@
-export const methods = {
-  get: "GET",
-  post: "POST",
-  create: "CREATE",
-  delete: "DELETE"
+export const actions = {
+  backup: "backup",
+  create: "create",
+  edit: "edit",
+  delete: "delete",
 };
 
 export const httpStatus = {

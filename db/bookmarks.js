@@ -16,7 +16,7 @@ export async function setupBookmarks(mongo, collNames) {
   }
 }
 
-export async function getBookmarks() {
+export async function get() {
   const mongo = await connect();
   const bookmarks =
     mongo.models.bookmarks || mongo.model("bookmarks", schema(mongo));
@@ -28,8 +28,25 @@ export async function getBookmarks() {
   return data;
 }
 
+export async function getFolder(folderId) {
+  const mongo = await connect();
+  const bookmarks =
+    mongo.models.bookmarks || mongo.model("bookmarks", schema(mongo));
+
+  const document = await bookmarks.findOne({ _id: folderId });
+  const data = document.data;
+  mongo.connection.close();
+
+  return data;
+}
+
 export async function create(req) {
-  const filter = { name: "links", root: true };
+  let filter = { name: "links", root: true };
+
+  if (req?.folderId) {
+    filter = { _id: req.folderId };
+  }
+
   const newData = {
     uid: uuidv4(),
     name: req.name,
@@ -61,7 +78,12 @@ export async function create(req) {
 }
 
 export async function del(req) {
-  const filter = { name: "links", root: true };
+  let filter = { name: "links", root: true };
+
+  if (req?.fromFolder) {
+    filter = { _id: req.fromFolder };
+  }
+
   const mongo = await connect();
   const bookmarks =
     mongo.models.bookmarks || mongo.model("bookmarks", schema(mongo));

@@ -10,7 +10,7 @@
     "uuid": "^9.0.1"
   },
   "scripts": {
-    "start": "node index.js"
+    "dev": "node index.js"
   },
   "author": "rc"
 }

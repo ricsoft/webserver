@@ -9,26 +9,12 @@ router.get("/bookmarks/:param", async function (req, res) {
 
   if (req.params.param === "backup") data = await bookmarks.getBackup();
   else if (req.params.param) data = await bookmarks.getFolder(req.params.param);
-
-  if (data) {
-    res.status(httpStatus.ok);
-    res.json(data);
-  }
-
-  res.status(httpStatus.error);
-  res.send();
+  checkData({ res: res, data: data });
 });
 
 router.get("/bookmarks", async function (req, res) {
   const data = await bookmarks.get();
-
-  if (data) {
-    res.status(httpStatus.ok);
-    res.json(data);
-  }
-
-  res.status(httpStatus.error);
-  res.send();
+  checkData({ res: res, data: data });
 });
 
 router.post("/bookmarks", async function (req, res) {
@@ -36,5 +22,15 @@ router.post("/bookmarks", async function (req, res) {
   res.status(ok ? httpStatus.ok : httpStatus.error);
   res.send();
 });
+
+function checkData(args) {
+  if (args.data) {
+    args.res.status(httpStatus.ok);
+    args.res.json(args.data);
+  }
+
+  args.res.status(httpStatus.error);
+  args.res.send();
+}
 
 export default router;

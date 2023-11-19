@@ -4,10 +4,12 @@ import { httpStatus } from "../utils/constants.js";
 
 const router = express.Router();
 
-router.get("/bookmarks/:folder", async function (req, res) {
+router.get("/bookmarks/:param", async function (req, res) {
   let data = null;
 
-  if (req.params.folder) data = await bookmarks.getFolder(req.params.folder);
+  if (req.params.param === "backup") data = await bookmarks.getBackup();
+  else if (req.params.param) data = await bookmarks.getFolder(req.params.param);
+
   if (data) {
     res.status(httpStatus.ok);
     res.json(data);

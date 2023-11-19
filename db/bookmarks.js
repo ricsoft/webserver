@@ -23,7 +23,7 @@ export async function get() {
 
   const document = await bookmarks.findOne({ name: "links", root: true });
   const data = document.data;
-  mongo.connection.close();
+  await mongo.connection.close();
 
   return data;
 }
@@ -35,9 +35,20 @@ export async function getFolder(folderId) {
 
   const document = await bookmarks.findOne({ _id: folderId });
   const data = document.data;
-  mongo.connection.close();
+  await mongo.connection.close();
 
   return data;
+}
+
+export async function getBackup() {
+  const mongo = await connect();
+  const bookmarks =
+    mongo.models.bookmarks || mongo.model("bookmarks", schema(mongo));
+
+  let documents = await bookmarks.find();
+  await mongo.connection.close();
+
+  return documents;
 }
 
 export async function create(req) {
@@ -72,7 +83,7 @@ export async function create(req) {
   const res = await bookmarks.updateOne(filter, {
     data: [...document.data, newData],
   });
-  mongo.connection.close();
+  await mongo.connection.close();
 
   return res.modifiedCount === 1;
 }
@@ -122,7 +133,7 @@ export async function edit(req) {
   const res = await bookmarks.updateOne(filter, {
     data: [...document.data],
   });
-  mongo.connection.close();
+  await mongo.connection.close();
 
   return res.modifiedCount === 1;
 }
@@ -146,7 +157,24 @@ export async function del(req) {
   const res = await bookmarks.updateOne(filter, {
     data: [...document.data],
   });
-  mongo.connection.close();
+  await mongo.connection.close();
 
   return res.modifiedCount === 1;
+}
+
+export async function restore(req) {
+  const data = await JSON.parse(req.data);
+  if (!data || !data.length > 0) return false;
+
+  const mongo = await connect();
+  const bookmarks =
+    mongo.models.bookmarks || mongo.model("bookmarks", schema(mongo));
+
+  let res = await bookmarks.collection.drop();
+  if (!res) return false;
+
+  res = await bookmarks.create(data);
+  await mongo.connection.close();
+
+  return res.length === data.length;
 }

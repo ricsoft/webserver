@@ -13,7 +13,7 @@ export async function setupDb() {
 
   await setupBookmarks(mongo, collNames);
 
-  mongo.connection.close();
+  await mongo.connection.close();
 }
 
 async function collectionNames(mongo) {

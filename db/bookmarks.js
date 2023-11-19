@@ -1,4 +1,4 @@
-import { schema } from "../utils/constants.js";
+import { schema } from "../utils/utils.js";
 import { connect } from "./db.js";
 import { v4 as uuidv4 } from "uuid";
 

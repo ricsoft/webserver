@@ -9,4 +9,5 @@ export const actions = {
 export const httpStatus = {
   ok: 200,
   error: 500,
+  unauthorized: 401,
 };

@@ -1,5 +1,7 @@
 import router from "./routes/routes.js";
 import express from "express";
+import https from "https";
+import fs from "fs";
 import cors from "cors";
 import { setupDb } from "./db/db.js";
 import "dotenv/config.js";
@@ -7,7 +9,21 @@ import "dotenv/config.js";
 await setupDb();
 
 const app = express();
+app.use(cors());
 app.use(express.json());
 app.use(router);
-app.use(cors());
-app.listen(process.env.PORT);
+
+if (JSON.parse(process.env.HTTPS)) {
+  https
+    .createServer(
+      {
+        // openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -sha256 -days 9999
+        key: fs.readFileSync("key.pem"),
+        cert: fs.readFileSync("cert.pem"),
+      },
+      app
+    )
+    .listen(process.env.PORT);
+} else {
+  app.listen(process.env.PORT);
+}

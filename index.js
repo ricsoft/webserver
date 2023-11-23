@@ -19,6 +19,7 @@ if (JSON.parse(process.env.HTTPS)) {
       {
         // openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -sha256 -days 9999
         key: fs.readFileSync("key.pem"),
+        passphrase: process.env.PASSPHRASE,
         cert: fs.readFileSync("cert.pem"),
       },
       app

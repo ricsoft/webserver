@@ -38,5 +38,5 @@ export async function update(sites) {
   }
 
   await mongo.connection.close();
-  return res.modifiedCount === 1 || res.upsertedCount === 1;
+  return res?.modifiedCount === 1 || res?.upsertedCount === 1;
 }

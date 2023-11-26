@@ -1,5 +1,6 @@
 import router from "./routes/routes.js";
 import express from "express";
+import exphbs from "express-handlebars";
 import https from "https";
 import fs from "fs";
 import cors from "cors";
@@ -11,6 +12,8 @@ await setupDb();
 const app = express();
 app.use(cors());
 app.use(express.json());
+app.engine("hbs", exphbs.engine({ extname: ".hbs" }));
+app.set("view engine", "hbs");
 app.use(router);
 
 if (JSON.parse(process.env.HTTPS)) {

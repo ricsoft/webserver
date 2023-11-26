@@ -1,0 +1,47 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css"
+    />
+    <title>Discounts</title>
+  </head>
+  <body class="has-background-dark" style="min-height: 100vh">
+    <div
+      class="mx-auto py-5 is-flex is-justify-content-space-evenly"
+      style="max-width:1600px"
+    >
+      {{#each sites}}
+        <table
+          class="mx-4 table is-fullwidth is-striped has-background-white is-align-self-flex-start"
+          style="max-width:500px;"
+        >
+          <tbody>
+            <tr>
+              <td class="is-flex is-align-items-baseline">
+                <p
+                  class="mr-2 has-text-weight-semibold is-uppercase"
+                >{{site}}</p>
+                <p class="is-size-7">{{lastUpdated}}</p>
+              </td>
+              <td></td>
+            </tr>
+            {{#each data}}
+              <tr>
+                <td>
+                  <p>{{title}}</p>
+                </td>
+                <td class="has-text-right">
+                  <p>{{price}}</p>
+                </td>
+              </tr>
+            {{/each}}
+          </tbody>
+        </table>
+      {{/each}}
+    </div>
+  </body>
+</html>

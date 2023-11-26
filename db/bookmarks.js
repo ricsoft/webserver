@@ -45,7 +45,7 @@ export async function getBackup() {
   const bookmarks =
     mongo.models.bookmarks || mongo.model("bookmarks", schema(mongo));
 
-  let documents = await bookmarks.find();
+  const documents = await bookmarks.find();
   await mongo.connection.close();
 
   return documents;

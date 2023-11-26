@@ -7,6 +7,17 @@ export async function setupDiscounts(mongo, collNames) {
   }
 }
 
+export async function get() {
+  const mongo = await connect();
+  const discounts =
+    mongo.models.discounts || mongo.model("discounts", schema(mongo));
+
+  const documents = await discounts.find();
+  await mongo.connection.close();
+
+  return documents;
+}
+
 export async function update(sites) {
   const mongo = await connect();
   const discounts =
